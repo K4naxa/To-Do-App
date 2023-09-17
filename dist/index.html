@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/style.css" />
-    <script defer src="/src/script.js"></script>
+    <script src="/src/script.js" defer></script>
     <title>To-Do App</title>
   </head>
   <body>
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="container">
-        <div class="toDoCard priorityLow toDoCompleted">
+        <div class="toDoCard">
           <div class="cardContent">
             <button class="CheckBtn"></button>
             <span>Clean the Dishwasher</span>
@@ -32,7 +32,7 @@
             <button class="TrashBtn"></button>
           </div>
         </div>
-        <div class="toDoCard priorityHigh">
+        <div class="toDoCard">
           <div class="cardContent">
             <button class="CheckBtn"></button>
             <span>Clean the Dishwasher</span>
@@ -43,8 +43,52 @@
             <button class="TrashBtn"></button>
           </div>
         </div>
-        <div class="addToDoBtn"></div>
+        <div class="addToDoBtn" id="addToDoBtn"></div>
       </div>
+    </div>
+
+    <!-- New to do winodw -->
+
+    <div class="newToDoForm-modal">
+      <form action="createToDo">
+        <div class="header">
+          <h2>Create a new To Do</h2>
+          <img
+            id="newtodo_closeWindowBtn"
+            src="/src/images/icons/x black.svg"
+            alt="close window icon"
+          />
+        </div>
+
+        <div class="menu">
+          <ul>
+            <li class="newToDo">To DO</li>
+          </ul>
+        </div>
+
+        <div class="inputContainer" id="inputContainer">
+          <input
+            type="text"
+            name="new-todo"
+            id="toDo_title"
+            placeholder="Title: Pay bills"
+            required
+          />
+          <input
+            type="text"
+            name="new-todo"
+            id="toDo_details"
+            placeholder="Details: e.g internet, phone, rent."
+          />
+          <label for="toDo_dueDate">Due Date:</label>
+          <input
+            type="date"
+            name="new-todo"
+            id="toDo_date"
+            class="create-new__date-input"
+          />
+        </div>
+      </form>
     </div>
   </body>
 </html>
