@@ -303,7 +303,7 @@ body {
           color: white;
           background-color: green;
         }
-        & .toDo_mediumPriorityBtn_active {
+        & .toDo_mediumgPriorityBtn_active {
           color: white;
           background-color: orange;
         }
@@ -312,6 +312,30 @@ body {
           background-color: red;
         }
       }
+    }
+  }
+
+  .createToDoBtn {
+    background-color: #62bec1;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    background-image: url(/src/images/icons/plus.svg);
+    background-size: 2em;
+    background-position: center;
+
+    position: absolute;
+    right: 1em;
+    bottom: 1em;
+
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.1);
+      transition: ease-in-out 0.2s;
+    }
+    &:active {
+      transform: scale(0.9);
+      transition: 0.1s;
     }
   }
 
