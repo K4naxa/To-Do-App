@@ -26,24 +26,15 @@ class ToDoManager {
     this.todos.push(todo);
   }
 
-  // Implement other functions for managing To-Do items
+  cardCreator() {}
+  cardEditor() {}
 }
-// Create new todo & Place it in memory
+
 function toDo_factory() {}
 
-// filter todo Renderin with Home / Today / Week
-
-// Create Sort by function
-
-// dom renderer
-
-// memory looper
-
-// filter selector
-
-//card creator
-
-// card editor
+function filterSelector() {}
+function memoryLooper() {}
+function sortBy() {}
 
 // ADD button function
 const DOMrenderer = new DOMrender();

@@ -49,10 +49,10 @@
 
     <!-- New to do winodw -->
 
-    <div class="newToDoForm-modal">
+    <div class="newToDoForm-modal visible">
       <form action="createToDo">
         <div class="header">
-          <h2>Create a new To Do</h2>
+          <h2>New Entry</h2>
           <img
             id="newtodo_closeWindowBtn"
             src="/src/images/icons/x black.svg"
@@ -60,33 +60,57 @@
           />
         </div>
 
+        <!-- Menu  -->
+
         <div class="menu">
           <ul>
             <li class="newToDo">To DO</li>
           </ul>
         </div>
 
+        <!-- Input container -->
+
         <div class="inputContainer" id="inputContainer">
-          <input
-            type="text"
-            name="new-todo"
-            id="toDo_title"
-            placeholder="Title: Pay bills"
-            required
-          />
-          <input
-            type="text"
-            name="new-todo"
-            id="toDo_details"
-            placeholder="Details: e.g internet, phone, rent."
-          />
-          <label for="toDo_dueDate">Due Date:</label>
-          <input
-            type="date"
-            name="new-todo"
-            id="toDo_date"
-            class="create-new__date-input"
-          />
+          <div class="textInputContainer">
+            <input
+              type="text"
+              name="new-todo"
+              id="toDo_title"
+              placeholder="Title: Pay bills"
+              required
+            />
+            <textarea
+              name="new-todo"
+              id="toDo_details"
+              cols="30"
+              rows="8"
+              placeholder="Details: e.g internet, phone, rent."
+            ></textarea>
+            <!-- <input
+              type="text"
+              name="new-todo"
+              id="toDo_details"
+              placeholder="Details: e.g internet, phone, rent."
+            /> -->
+          </div>
+          <div class="secondaryInputs">
+            <div class="dateInput">
+              <label for="toDo_dueDate">Due Date:</label>
+              <input
+                type="date"
+                name="new-todo"
+                id="toDo_date"
+                class="create-new__date-input"
+              />
+            </div>
+
+            <div class="priorityContainer">
+              <span>Priority: </span>
+              <button class="toDo_lowPriorityBtn">Low</button
+              ><button class="toDo_mediumPriorityBtn">Medium</button>
+              <button class="toDo_highPriorityBtn">High</button>
+            </div>
+          </div>
         </div>
       </form>
     </div>
