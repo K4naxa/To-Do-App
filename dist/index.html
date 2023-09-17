@@ -12,9 +12,14 @@
       <div class="header"><h1>To-Do App</h1></div>
       <div class="menu">
         <div class="menu_main_section">
-          <div class="homePage">Home</div>
+          <ul>
+            <li class="todoAllProjectPage active">All</li>
+            <li class="todoDayProjectPage">Day</li>
+            <li class="todoWeekProjectPage">Week</li>
+          </ul>
+          <!-- <div class="homePage">Home</div>
           <div class="todayPage">Today</div>
-          <div class="weekPage">Week</div>
+          <div class="weekPage">Week</div> -->
         </div>
         <div class="menu_second_section">
           <h3>Projects</h3>
@@ -49,7 +54,7 @@
 
     <!-- New to do winodw -->
 
-    <div class="newToDoForm-modal visible">
+    <div class="newToDoForm-modal">
       <form action="createToDo">
         <div class="header">
           <h2>New Entry</h2>
@@ -86,12 +91,6 @@
               rows="8"
               placeholder="Details: e.g internet, phone, rent."
             ></textarea>
-            <!-- <input
-              type="text"
-              name="new-todo"
-              id="toDo_details"
-              placeholder="Details: e.g internet, phone, rent."
-            /> -->
           </div>
           <div class="secondaryInputs">
             <div class="dateInput">
@@ -112,7 +111,7 @@
             </div>
           </div>
         </div>
-        <div class="createToDoBtn"></div>
+        <button type="submit" class="createToDoBtn"></button>
       </form>
     </div>
   </body>

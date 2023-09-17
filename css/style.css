@@ -46,6 +46,25 @@ body {
       display: flex;
       flex-direction: column;
       row-gap: 20px;
+
+      & ul {
+        list-style-type: none;
+        margin: 0;
+        margin-right: 2em;
+        padding: 0;
+
+        & li {
+          cursor: pointer;
+
+          &.active {
+            list-style: "// ";
+          }
+        }
+
+        & :hover {
+          list-style: "// ";
+        }
+      }
     }
   }
 
@@ -281,7 +300,6 @@ body {
           border-radius: 5px;
           color: white;
           cursor: pointer;
-          transition: all 0.3s;
           &:hover {
             transform: scale(1.05);
           }
@@ -303,7 +321,7 @@ body {
           color: white;
           background-color: green;
         }
-        & .toDo_mediumgPriorityBtn_active {
+        & .toDo_mediumPriorityBtn_active {
           color: white;
           background-color: orange;
         }
@@ -317,12 +335,14 @@ body {
 
   .createToDoBtn {
     background-color: #62bec1;
-    width: 2em;
-    height: 2em;
+    width: 3em;
+    height: 3em;
     border-radius: 50%;
     background-image: url(/src/images/icons/plus.svg);
-    background-size: 2em;
+    background-size: 3em;
     background-position: center;
+
+    border: 0;
 
     position: absolute;
     right: 1em;
