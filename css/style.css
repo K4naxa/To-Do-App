@@ -56,7 +56,7 @@ body {
         & li {
           cursor: pointer;
 
-          &.active {
+          &.activeFilter {
             list-style: "// ";
           }
         }
@@ -143,7 +143,7 @@ body {
         }
       }
 
-      &.priorityMediu {
+      &.priorityMedium {
         border-left: 3px solid orange;
       }
       &.priorityLow {

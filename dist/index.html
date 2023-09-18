@@ -13,9 +13,9 @@
       <div class="menu">
         <div class="menu_main_section">
           <ul>
-            <li class="todoAllProjectPage active">All</li>
-            <li class="todoDayProjectPage">Day</li>
-            <li class="todoWeekProjectPage">Week</li>
+            <li class="todoAllProjectPage filter activeFilter">All</li>
+            <li class="todoDayProjectPage filter">Day</li>
+            <li class="todoWeekProjectPage filter">Week</li>
           </ul>
         </div>
         <div class="menu_second_section">
@@ -33,7 +33,7 @@
     <!-- New to do winodw -->
 
     <div class="newToDoForm-modal">
-      <form action="createToDo">
+      <form action="createToDo" id="createTodoForm">
         <div class="header">
           <h2>New Entry</h2>
           <img id="newtodo_closeWindowBtn" src="/src/images/icons/x black.svg" alt="close window icon" />

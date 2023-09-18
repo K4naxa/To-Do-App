@@ -15,6 +15,7 @@ const todoWeekProjectPage = document.querySelector(".todoWeekProjectPage");
 // querySelectors from New Entry window ->
 
 // form inputs
+const createTodoWindow = document.getElementById("createTodoWindow");
 const form_toDo_title = document.getElementById("toDo_title");
 const form_toDo_details = document.getElementById("toDo_details");
 const form_toDo_date = document.getElementById("toDo_date");
@@ -32,7 +33,7 @@ const newtodo_closeWindowBtn = document.getElementById("newtodo_closeWindowBtn")
 
 // CLass that includes all DOM rendering functions
 class DOMrender {
-  renderCard(card) {
+  renderTodo(todo) {
     // Creating elements for new Todo Card
     const toDoCard = document.createElement("div");
     const cardContent = document.createElement("div");
@@ -57,9 +58,27 @@ class DOMrender {
     EditBtn.classList.add("EditBtn");
     TrashBtn.classList.add("TrashBtn");
 
+    // adding priority
+    switch (todo.priority) {
+      case "low":
+        toDoCard.classList.add("priorityLow");
+        break;
+
+      case "medium":
+        toDoCard.classList.add("priorityMedium");
+        break;
+
+      case "high":
+        toDoCard.classList.add("priorityHigh");
+        break;
+
+      default:
+        break;
+    }
+
     // adding text content for elements
-    cardtitle.textContent = card.title;
-    cardDate.textContent = card.date;
+    cardtitle.textContent = todo.title;
+    cardDate.textContent = todo.date;
     detailsBtn.textContent = "Details";
 
     // appending children for the elements
@@ -77,14 +96,18 @@ class DOMrender {
     cardControls.appendChild(TrashBtn);
   }
 
-  renderAddToDo() {
+  renderAddToDoForm() {
     newToDoForm_modal.classList.add("visible");
   }
-  closeAddToDo() {
+  closeAddToDoForm() {
     newToDoForm_modal.classList.remove("visible");
   }
+  renderAllTodos() {
+    for (let i = 0; i < todoManagment.todos.length; i++) {
+      this.renderTodo(todoManagment.todos[i]);
+    }
+  }
 }
-//create domrenderer to use domrender functions
 const DOMrenderer = new DOMrender();
 
 class ToDoManager {
@@ -93,9 +116,10 @@ class ToDoManager {
   }
 
   addToDo(todo) {
-    this.todos.push(todo);
+    this.todos.push(todo); // pushes new todo to todo array
   }
 
+  // checks for active priority inside of new todo form
   checkForActivePriority() {
     const btns = document.querySelectorAll(".toDo_priorityBtns");
     for (const btn of btns) {
@@ -106,19 +130,18 @@ class ToDoManager {
     }
   }
 
-  // creates Todo from filled form window
+  // creates Todo from new todo form window
   createTodo() {
     let title = form_toDo_title.value;
     let details = form_toDo_details.value;
     let date = form_toDo_date.value;
     let priority = this.checkForActivePriority();
+    let filter;
 
-    return { title, details, date, priority };
+    return { title, details, date, priority, filter };
   }
 }
-
-// Creates the todomanager to use functions inside of ToDoManager class
-const TodoManagerer = new ToDoManager();
+const todoManagment = new ToDoManager();
 
 // Disables all active Priority tags
 function removeActivePriority() {
@@ -134,23 +157,28 @@ function removeActivePriority() {
 function activatePriority(e) {
   event.preventDefault();
   removeActivePriority();
-
   const priority = e.target.textContent.toLowerCase();
-  console.log(e.target.classList);
   e.target.classList.add(`toDo_${priority}PriorityBtn_active`);
 }
 
-function toDo_factory() {}
-
-function filterSelector() {}
 function memoryLooper() {}
 function sortBy() {}
 
+// function for todo Form Submit button
+function submitTodoformFunction() {
+  event.preventDefault();
+  let newTodo = todoManagment.createTodo();
+  todoManagment.addToDo(newTodo);
+  DOMrenderer.renderAllTodos();
+
+  DOMrenderer.closeAddToDoForm();
+}
+
 // Activates todo new Entry window when the + icon is clicked
-addToDo_Btn.onclick = DOMrenderer.renderAddToDo;
+addToDo_Btn.onclick = DOMrenderer.renderAddToDoForm;
 
 // closes todo new entry window when x is clicked
-newtodo_closeWindowBtn.onclick = DOMrenderer.closeAddToDo;
+newtodo_closeWindowBtn.onclick = DOMrenderer.closeAddToDoForm;
 
 // Checks for clicked Priority selection in Todo creation form and activates it
 toDo_lowPriorityBtn.addEventListener("click", (e) => {
@@ -163,8 +191,4 @@ toDo_highPriorityBtn.addEventListener("click", (e) => {
   activatePriority(e);
 });
 
-submitTodoform.addEventListener("click", () => {
-  event.preventDefault();
-  let newTodo = TodoManagerer.createTodo();
-  DOMrenderer.renderCard(newTodo);
-});
+submitTodoform.onclick = submitTodoformFunction;
