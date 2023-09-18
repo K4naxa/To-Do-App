@@ -15,7 +15,6 @@ const todoWeekProjectPage = document.querySelector(".todoWeekProjectPage");
 // querySelectors from New Entry window ->
 
 // form inputs
-const createTodoWindow = document.getElementById("createTodoWindow");
 const form_toDo_title = document.getElementById("toDo_title");
 const form_toDo_details = document.getElementById("toDo_details");
 const form_toDo_date = document.getElementById("toDo_date");
@@ -97,6 +96,7 @@ class DOMrender {
   }
 
   renderAddToDoForm() {
+    document.getElementById("createTodoForm").reset();
     newToDoForm_modal.classList.add("visible");
   }
   closeAddToDoForm() {
