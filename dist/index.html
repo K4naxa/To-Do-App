@@ -58,11 +58,7 @@
       <form action="createToDo">
         <div class="header">
           <h2>New Entry</h2>
-          <img
-            id="newtodo_closeWindowBtn"
-            src="/src/images/icons/x black.svg"
-            alt="close window icon"
-          />
+          <img id="newtodo_closeWindowBtn" src="/src/images/icons/x black.svg" alt="close window icon" />
         </div>
 
         <!-- Menu  -->
@@ -77,13 +73,7 @@
 
         <div class="inputContainer" id="inputContainer">
           <div class="textInputContainer">
-            <input
-              type="text"
-              name="new-todo"
-              id="toDo_title"
-              placeholder="Title: Pay bills"
-              required
-            />
+            <input type="text" name="new-todo" id="toDo_title" placeholder="Title: Pay bills" required />
             <textarea
               name="new-todo"
               id="toDo_details"
@@ -95,19 +85,14 @@
           <div class="secondaryInputs">
             <div class="dateInput">
               <label for="toDo_dueDate">Due Date:</label>
-              <input
-                type="date"
-                name="new-todo"
-                id="toDo_date"
-                class="create-new__date-input"
-              />
+              <input type="date" name="new-todo" id="toDo_date" class="create-new__date-input" />
             </div>
 
             <div class="priorityContainer">
               <span>Priority: </span>
-              <button class="toDo_lowPriorityBtn">Low</button
-              ><button class="toDo_mediumPriorityBtn">Medium</button>
-              <button class="toDo_highPriorityBtn">High</button>
+              <button class="toDo_lowPriorityBtn toDo_priorityBtns">Low</button
+              ><button class="toDo_mediumPriorityBtn toDo_priorityBtns">Medium</button>
+              <button class="toDo_highPriorityBtn toDo_priorityBtns">High</button>
             </div>
           </div>
         </div>

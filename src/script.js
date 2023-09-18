@@ -26,18 +26,14 @@ const form_toDo_title = document.getElementById("toDo_title");
 const form_toDo_details = document.getElementById("toDo_details");
 const form_toDo_date = document.getElementById("toDo_date");
 const toDo_lowPriorityBtn = document.querySelector(".toDo_lowPriorityBtn");
-const toDo_mediumPriorityBtn = document.querySelector(
-  ".toDo_mediumPriorityBtn"
-);
+const toDo_mediumPriorityBtn = document.querySelector(".toDo_mediumPriorityBtn");
 const toDo_highPriorityBtn = document.querySelector(".toDo_highPriorityBtn");
 
 // Button that submits the create todo form
 const submitTodoform = document.querySelector(".createToDoBtn");
 
 // Button to close the new todo window within the window
-const newtodo_closeWindowBtn = document.getElementById(
-  "newtodo_closeWindowBtn"
-);
+const newtodo_closeWindowBtn = document.getElementById("newtodo_closeWindowBtn");
 
 // --------------------------------------------------------------------
 
@@ -64,29 +60,47 @@ class ToDoManager {
     this.todos.push(todo);
   }
 
-  createToDo(title, details, date, priority, project) {
-    return { title, details, date, priority, project };
+  checkForActivePriority() {
+    const btns = document.querySelectorAll(".toDo_priorityBtns");
+    for (const btn of btns) {
+      const tmpPrio = btn.textContent.toLocaleLowerCase();
+      if (btn.classList.contains(`toDo_${tmpPrio}PriorityBtn_active`)) {
+        return tmpPrio;
+      }
+    }
   }
 
-  getNewTodo() {
+  // creates Todo from filled form window
+  createTodo() {
     let title = form_toDo_title.value;
     let details = form_toDo_details.value;
     let date = form_toDo_date.value;
+    let priority = this.checkForActivePriority();
+
+    return { title, details, date, priority };
   }
 }
 
+// Creates the todomanager to use functions inside of ToDoManager class
+const TodoManagerer = new ToDoManager();
+
+// Disables all active Priority tags
 function removeActivePriority() {
   const btns = document.querySelectorAll(".toDo_priorityBtns");
   btns.forEach((btn) => {
+    const priority = btn.textContent.toLocaleLowerCase();
+
     btn.classList.remove(`toDo_${priority}PriorityBtn_active`);
   });
 }
 
+// Activates priority button that was clicked
 function activatePriority(e) {
   event.preventDefault();
   removeActivePriority();
 
   const priority = e.target.textContent.toLowerCase();
+  console.log(e.target.classList);
   e.target.classList.add(`toDo_${priority}PriorityBtn_active`);
 }
 
@@ -96,9 +110,13 @@ function filterSelector() {}
 function memoryLooper() {}
 function sortBy() {}
 
+// Activates todo new Entry window when the + icon is clicked
 addToDo_Btn.onclick = DOMrenderer.renderAddToDo;
+
+// closes todo new entry window when x is clicked
 newtodo_closeWindowBtn.onclick = DOMrenderer.closeAddToDo;
 
+// Checks for clicked Priority selection in Todo creation form and activates it
 toDo_lowPriorityBtn.addEventListener("click", (e) => {
   activatePriority(e);
 });
@@ -107,4 +125,10 @@ toDo_mediumPriorityBtn.addEventListener("click", (e) => {
 });
 toDo_highPriorityBtn.addEventListener("click", (e) => {
   activatePriority(e);
+});
+
+submitTodoform.addEventListener("click", () => {
+  event.preventDefault();
+  let newTodo = TodoManagerer.createTodo();
+  console.log(newTodo);
 });
