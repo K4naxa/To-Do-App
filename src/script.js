@@ -1,17 +1,10 @@
 // modal for new todo window
 const newToDoForm_modal = document.querySelector(".newToDoForm-modal");
 
-// button to check todo as completed
-const todoCheckBtn = document.querySelector(".CheckBtn");
-
-// button to remove todo from the lists
-const todoTrashBtn = document.querySelector(".TrashBtn");
-
-// button to edit the todos info
-const todoEditBtn = document.querySelector(".EditBtn");
-
-// Button to open new todo window
+// Button to open todo creation window
 const addToDo_Btn = document.getElementById("addToDoBtn");
+
+const todoContainer = document.querySelector(".container");
 
 // List buttons to select visible todos ( add " active " class for visial representation of active selector)
 const todoAllProjectPage = document.querySelector(".todoAllProjectPage");
@@ -39,7 +32,50 @@ const newtodo_closeWindowBtn = document.getElementById("newtodo_closeWindowBtn")
 
 // CLass that includes all DOM rendering functions
 class DOMrender {
-  renderCard(card) {}
+  renderCard(card) {
+    // Creating elements for new Todo Card
+    const toDoCard = document.createElement("div");
+    const cardContent = document.createElement("div");
+    const CheckBtn = document.createElement("button");
+    const cardtitle = document.createElement("div");
+
+    const cardControls = document.createElement("div");
+    const detailsBtn = document.createElement("button");
+    const cardDate = document.createElement("div");
+    const EditBtn = document.createElement("button");
+    const TrashBtn = document.createElement("button");
+
+    // giving elements their css classes
+    toDoCard.classList.add("toDoCard");
+    cardContent.classList.add("cardContent");
+    CheckBtn.classList.add("CheckBtn");
+    cardtitle.classList.add("cardtitle");
+
+    cardControls.classList.add("cardControls");
+    detailsBtn.classList.add("detailsBtn");
+    cardDate.classList.add("cardDate");
+    EditBtn.classList.add("EditBtn");
+    TrashBtn.classList.add("TrashBtn");
+
+    // adding text content for elements
+    cardtitle.textContent = card.title;
+    cardDate.textContent = card.date;
+    detailsBtn.textContent = "Details";
+
+    // appending children for the elements
+
+    todoContainer.appendChild(toDoCard);
+    toDoCard.appendChild(cardContent);
+    toDoCard.appendChild(cardControls);
+
+    cardContent.appendChild(CheckBtn);
+    cardContent.appendChild(cardtitle);
+
+    cardControls.appendChild(detailsBtn);
+    cardControls.appendChild(cardDate);
+    cardControls.appendChild(EditBtn);
+    cardControls.appendChild(TrashBtn);
+  }
 
   renderAddToDo() {
     newToDoForm_modal.classList.add("visible");
@@ -130,5 +166,5 @@ toDo_highPriorityBtn.addEventListener("click", (e) => {
 submitTodoform.addEventListener("click", () => {
   event.preventDefault();
   let newTodo = TodoManagerer.createTodo();
-  console.log(newTodo);
+  DOMrenderer.renderCard(newTodo);
 });
