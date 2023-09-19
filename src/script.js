@@ -44,6 +44,33 @@ const newtodo_closeWindowBtn = document.getElementById("newtodo_closeWindowBtn")
 //
 //
 
+class MemoryManagment {
+  saveTodoList() {
+    let todosString = JSON.stringify(todoManager.todos);
+    localStorage.setItem("todos", todosString);
+  }
+
+  saveProjectsList() {
+    let projectsString = JSON.stringify(projectManager.projects);
+    localStorage.setItem("projects", projectsString);
+  }
+
+  getTodoList() {
+    let todosString = localStorage.getItem("todos");
+    return JSON.parse(todosString);
+  }
+
+  getProjectsList() {
+    let projectsString = localStorage.getItem("projects");
+    return JSON.parse(projectsString);
+  }
+}
+const memoryManager = new MemoryManagment();
+
+//
+//
+//
+
 class DOMrender {
   renderTodo(todo) {
     // Creating elements for new Todo Card
@@ -184,10 +211,13 @@ const DOMrenderer = new DOMrender();
 class ToDoManagment {
   constructor() {
     this.todos = []; // Store To-Do items in memory
+    this.todos = memoryManager.getTodoList();
   }
+  todos = memoryManager.getTodoList();
 
   addToDo(todo) {
     this.todos.push(todo); // pushes new todo to todo array
+    memoryManager.saveTodoList();
   }
 
   // checks for active priority inside of new todo form
@@ -240,8 +270,8 @@ const todoManager = new ToDoManagment();
 class ProjectManagment {
   constructor() {
     this.projects = [];
+    this.projects = memoryManager.getProjectsList();
   }
-  projects = memoryManager.getProjectsList();
 
   createNewProject(newProject) {
     this.projects.push(newProject);
@@ -250,28 +280,6 @@ class ProjectManagment {
   }
 }
 const projectManager = new ProjectManagment();
-
-//
-//
-//
-
-class MemoryManagment {
-  saveTodoList() {
-    let todosString = JSON.stringify(todoManager.todos);
-    localStorage.setItem("todos", todosString);
-  }
-
-  saveProjectsList() {
-    let projectsString = JSON.stringify(projectManager.projects);
-    localStorage.setItem("projects", projectsString);
-  }
-
-  getTodoList() {
-    let todosString = localStorage.getItem("todos");
-    return JSON.parse(todosString);
-  }
-}
-const memoryManager = new MemoryManagment();
 
 //
 //
@@ -296,9 +304,6 @@ function activatePriority(e) {
   const priority = e.target.textContent.toLowerCase();
   e.target.classList.add(`toDo_${priority}PriorityBtn_active`);
 }
-
-function memoryLooper() {}
-function sortBy() {}
 
 // function for todo Form Submit button
 function submitTodoformFunction() {
@@ -341,3 +346,7 @@ CreateNewProjectTextField.addEventListener("keypress", function (e) {
     DOMrenderer.ToggleNewProjectTextArea();
   }
 });
+
+// start the page with the pages loaded
+DOMrenderer.renderAllTodos();
+DOMrenderer.renderProjects_mainPageContainer();
