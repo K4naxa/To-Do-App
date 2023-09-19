@@ -93,6 +93,11 @@ class DOMrender {
     cardControls.appendChild(cardDate);
     cardControls.appendChild(EditBtn);
     cardControls.appendChild(TrashBtn);
+
+    // button functions
+    CheckBtn.addEventListener("click", (e) => {
+      todoManagment.toggleTodoState(e);
+    });
   }
 
   renderAddToDoForm() {
@@ -136,9 +141,19 @@ class ToDoManager {
     let details = form_toDo_details.value;
     let date = form_toDo_date.value;
     let priority = this.checkForActivePriority();
+    let state = false;
     let filter;
 
-    return { title, details, date, priority, filter };
+    return { title, details, date, priority, state, filter };
+  }
+
+  toggleTodoState(e) {
+    const targetTodoCard = e.target.closest(".toDoCard");
+    if (targetTodoCard.classList.contains("toDoCompleted")) {
+      targetTodoCard.classList.remove("toDoCompleted");
+    } else {
+      targetTodoCard.classList.add("toDoCompleted");
+    }
   }
 }
 const todoManagment = new ToDoManager();
