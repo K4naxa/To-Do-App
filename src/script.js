@@ -142,6 +142,10 @@ class DOMrender {
     CheckBtn.addEventListener("click", (e) => {
       todoManager.toggleTodoState(e);
     });
+
+    TrashBtn.addEventListener("click", (e) => {
+      todoManager.deleteTodo(e);
+    });
   }
 
   renderAddToDoForm() {
@@ -187,7 +191,6 @@ class DOMrender {
   }
 
   renderProjects_newTodoWindow() {
-    console.log("renderprojects_newtodowindow used");
     newTodoWindow_projectsContainer.innerHTML = "";
     const ulList = document.createElement("ul");
     newTodoWindow_projectsContainer.appendChild(ulList);
@@ -243,21 +246,37 @@ class ToDoManagment {
     return { title, details, date, priority, state, filter };
   }
 
-  toggleTodoState(e) {
-    const targetTodoCard = e.target.closest(".toDoCard");
-    const cardTitle = targetTodoCard.querySelector(".cardtitle").textContent;
+  findTodoIndex(e) {
+    const targetTodoCard = e.target.closest(".toDoCard"); // scope the todocard to look for its title
+    const cardTitle = targetTodoCard.querySelector(".cardtitle").textContent; // get the title from the card
     for (let i = 0, len = todoManager.todos.length; i < len; i++) {
+      // loop through todos to find the index for the specific todo
       if (todoManager.todos[i].title === cardTitle) {
-        if (todoManager.todos[i].state === false) {
-          todoManager.todos[i].state = true;
-          targetTodoCard.classList.add("toDoCompleted");
-        } else {
-          todoManager.todos[i].state = false;
-          targetTodoCard.classList.remove("toDoCompleted");
-        }
-        return;
+        return i;
       }
     }
+  }
+
+  toggleTodoState(e) {
+    const index = this.findTodoIndex(e);
+    const todoElement = todoManager.todos[index];
+
+    if (todoElement.state === false) {
+      todoElement.state = true;
+    } else {
+      todoElement.state = false;
+    }
+
+    DOMrenderer.renderAllTodos();
+    return;
+  }
+
+  deleteTodo(e) {
+    const index = this.findTodoIndex(e);
+    todoManager.todos.splice(index, 1);
+
+    memoryManager.saveTodoList();
+    DOMrenderer.renderAllTodos();
   }
 }
 const todoManager = new ToDoManagment();
