@@ -23,6 +23,7 @@ const todoWeekProjectPage = document.querySelector(".todoWeekProjectPage");
 // ------------------------------------------------------------------------
 // querySelectors from New Entry window ->
 
+const newTodoWindow_projectsContainer = document.querySelector(".FormProjectMenu");
 // form inputs
 const form_toDo_title = document.getElementById("toDo_title");
 const form_toDo_details = document.getElementById("toDo_details");
@@ -37,9 +38,12 @@ const submitTodoform = document.querySelector(".createToDoBtn");
 // Button to close the new todo window within the window
 const newtodo_closeWindowBtn = document.getElementById("newtodo_closeWindowBtn");
 
-// --------------------------------------------------------------------
+//
+//
+//
+//
+//
 
-// CLass that includes all DOM rendering functions
 class DOMrender {
   renderTodo(todo) {
     // Creating elements for new Todo Card
@@ -114,8 +118,9 @@ class DOMrender {
   }
 
   renderAddToDoForm() {
-    document.getElementById("createTodoForm").reset();
-    newToDoForm_modal.classList.add("visible");
+    document.getElementById("createTodoForm").reset(); // resets the form
+    DOMrenderer.renderProjects_newTodoWindow(); // Renders interactable project list to Addtodo form window
+    newToDoForm_modal.classList.add("visible"); // makes the window visible
   }
   closeAddToDoForm() {
     newToDoForm_modal.classList.remove("visible");
@@ -139,7 +144,7 @@ class DOMrender {
     }
   }
 
-  renderAllProjects() {
+  renderProjects_mainPageContainer() {
     mainWindow_ProjectsContainer.innerHTML = "";
     const uList = document.createElement("ul");
     mainWindow_ProjectsContainer.appendChild(uList);
@@ -153,8 +158,28 @@ class DOMrender {
       uList.appendChild(newListItem);
     }
   }
+
+  renderProjects_newTodoWindow() {
+    console.log("renderprojects_newtodowindow used");
+    newTodoWindow_projectsContainer.innerHTML = "";
+    const ulList = document.createElement("ul");
+    newTodoWindow_projectsContainer.appendChild(ulList);
+
+    for (let i = 0, len = projectManager.projects.length; i < len; i++) {
+      const newListItem = document.createElement("li");
+
+      newListItem.innerText = projectManager.projects[i];
+      newListItem.classList.add("filter");
+
+      ulList.appendChild(newListItem);
+    }
+  }
 }
 const DOMrenderer = new DOMrender();
+
+//
+//
+//
 
 class ToDoManagment {
   constructor() {
@@ -207,18 +232,52 @@ class ToDoManagment {
 }
 const todoManager = new ToDoManagment();
 
+//
+//
+//
+
 // projectmanagment to include all project manipulation
 class ProjectManagment {
   constructor() {
     this.projects = [];
   }
+  projects = memoryManager.getProjectsList();
 
   createNewProject(newProject) {
     this.projects.push(newProject);
-    DOMrenderer.renderAllProjects();
+    memoryManager.saveProjectsList();
+    DOMrenderer.renderProjects_mainPageContainer();
   }
 }
 const projectManager = new ProjectManagment();
+
+//
+//
+//
+
+class MemoryManagment {
+  saveTodoList() {
+    let todosString = JSON.stringify(todoManager.todos);
+    localStorage.setItem("todos", todosString);
+  }
+
+  saveProjectsList() {
+    let projectsString = JSON.stringify(projectManager.projects);
+    localStorage.setItem("projects", projectsString);
+  }
+
+  getTodoList() {
+    let todosString = localStorage.getItem("todos");
+    return JSON.parse(todosString);
+  }
+}
+const memoryManager = new MemoryManagment();
+
+//
+//
+//
+//
+//
 
 // Disables all active Priority tags
 function removeActivePriority() {
@@ -250,6 +309,12 @@ function submitTodoformFunction() {
 
   DOMrenderer.closeAddToDoForm();
 }
+
+//
+//
+//
+//
+//
 
 // Activates todo new Entry window when the + icon is clicked
 addToDo_Btn.onclick = DOMrenderer.renderAddToDoForm;
