@@ -11,15 +11,25 @@
     <div id="mainContainer">
       <div class="header"><h1>To-Do App</h1></div>
       <div class="menu">
-        <div class="menu_main_section">
+        <div class="menu_section menu_first_section">
           <ul>
-            <li class="todoAllProjectPage filter activeFilter">All</li>
-            <li class="todoDayProjectPage filter">Day</li>
-            <li class="todoWeekProjectPage filter">Week</li>
+            <li class="filter activeFilter">All</li>
+            <li class="filter">Day</li>
+            <li class="filter">Week</li>
           </ul>
         </div>
-        <div class="menu_second_section">
-          <h3>Projects</h3>
+        <div class="menu_section">
+          <h4>Projects</h4>
+          <div class="mainWindow_ProjectsContainer menu_section"></div>
+
+          <button class="CreateNewProjectBtn visible"></button>
+          <textarea
+            name="CreateNewProjectTextArea"
+            id="CreateNewProjectTextArea"
+            cols="10"
+            rows="1"
+            maxlength="19"
+          ></textarea>
         </div>
       </div>
 
@@ -41,10 +51,8 @@
 
         <!-- Menu  -->
 
-        <div class="menu">
-          <ul>
-            <li class="newToDo">To DO</li>
-          </ul>
+        <div class="menu_section FormProjectMenu">
+          <ul></ul>
         </div>
 
         <!-- Input container -->

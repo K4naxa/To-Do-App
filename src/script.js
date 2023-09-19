@@ -4,7 +4,16 @@ const newToDoForm_modal = document.querySelector(".newToDoForm-modal");
 // Button to open todo creation window
 const addToDo_Btn = document.getElementById("addToDoBtn");
 
+// container for todos
 const todoContainer = document.querySelector(".container");
+
+// main page project container
+const mainWindow_ProjectsContainer = document.querySelector(".mainWindow_ProjectsContainer");
+
+// button to create new project
+const CreateNewProjectBtn = document.querySelector(".CreateNewProjectBtn");
+// text area in witch you name the new project
+const CreateNewProjectTextField = document.getElementById("CreateNewProjectTextArea");
 
 // List buttons to select visible todos ( add " active " class for visial representation of active selector)
 const todoAllProjectPage = document.querySelector(".todoAllProjectPage");
@@ -100,7 +109,7 @@ class DOMrender {
 
     // button functions
     CheckBtn.addEventListener("click", (e) => {
-      todoManagment.toggleTodoState(e);
+      todoManager.toggleTodoState(e);
     });
   }
 
@@ -113,14 +122,41 @@ class DOMrender {
   }
   renderAllTodos() {
     todoContainer.innerHTML = "";
-    for (let i = 0; i < todoManagment.todos.length; i++) {
-      this.renderTodo(todoManagment.todos[i]);
+    for (let i = 0; i < todoManager.todos.length; i++) {
+      this.renderTodo(todoManager.todos[i]);
+    }
+  }
+
+  ToggleNewProjectTextArea() {
+    if (CreateNewProjectBtn.classList.contains("visible")) {
+      CreateNewProjectBtn.classList.remove("visible");
+      CreateNewProjectTextField.classList.add("visible");
+      CreateNewProjectTextField.focus();
+    } else {
+      CreateNewProjectBtn.classList.add("visible");
+      CreateNewProjectTextField.classList.remove("visible");
+      CreateNewProjectTextField.value = "";
+    }
+  }
+
+  renderAllProjects() {
+    mainWindow_ProjectsContainer.innerHTML = "";
+    const uList = document.createElement("ul");
+    mainWindow_ProjectsContainer.appendChild(uList);
+
+    for (let i = 0, len = projectManager.projects.length; i < len; i++) {
+      const newListItem = document.createElement("li");
+
+      newListItem.innerText = projectManager.projects[i];
+      newListItem.classList.add("filter");
+
+      uList.appendChild(newListItem);
     }
   }
 }
 const DOMrenderer = new DOMrender();
 
-class ToDoManager {
+class ToDoManagment {
   constructor() {
     this.todos = []; // Store To-Do items in memory
   }
@@ -155,13 +191,13 @@ class ToDoManager {
   toggleTodoState(e) {
     const targetTodoCard = e.target.closest(".toDoCard");
     const cardTitle = targetTodoCard.querySelector(".cardtitle").textContent;
-    for (let i = 0, len = todoManagment.todos.length; i < len; i++) {
-      if (todoManagment.todos[i].title === cardTitle) {
-        if (todoManagment.todos[i].state === false) {
-          todoManagment.todos[i].state = true;
+    for (let i = 0, len = todoManager.todos.length; i < len; i++) {
+      if (todoManager.todos[i].title === cardTitle) {
+        if (todoManager.todos[i].state === false) {
+          todoManager.todos[i].state = true;
           targetTodoCard.classList.add("toDoCompleted");
         } else {
-          todoManagment.todos[i].state = false;
+          todoManager.todos[i].state = false;
           targetTodoCard.classList.remove("toDoCompleted");
         }
         return;
@@ -169,7 +205,20 @@ class ToDoManager {
     }
   }
 }
-const todoManagment = new ToDoManager();
+const todoManager = new ToDoManagment();
+
+// projectmanagment to include all project manipulation
+class ProjectManagment {
+  constructor() {
+    this.projects = [];
+  }
+
+  createNewProject(newProject) {
+    this.projects.push(newProject);
+    DOMrenderer.renderAllProjects();
+  }
+}
+const projectManager = new ProjectManagment();
 
 // Disables all active Priority tags
 function removeActivePriority() {
@@ -195,8 +244,8 @@ function sortBy() {}
 // function for todo Form Submit button
 function submitTodoformFunction() {
   event.preventDefault();
-  let newTodo = todoManagment.createTodo();
-  todoManagment.addToDo(newTodo);
+  let newTodo = todoManager.createTodo();
+  todoManager.addToDo(newTodo);
   DOMrenderer.renderAllTodos();
 
   DOMrenderer.closeAddToDoForm();
@@ -220,3 +269,10 @@ toDo_highPriorityBtn.addEventListener("click", (e) => {
 });
 
 submitTodoform.onclick = submitTodoformFunction;
+CreateNewProjectBtn.onclick = DOMrenderer.ToggleNewProjectTextArea;
+CreateNewProjectTextField.addEventListener("keypress", function (e) {
+  if (e.code === "Enter") {
+    projectManager.createNewProject(e.target.value);
+    DOMrenderer.ToggleNewProjectTextArea();
+  }
+});
