@@ -57,6 +57,10 @@ class DOMrender {
     EditBtn.classList.add("EditBtn");
     TrashBtn.classList.add("TrashBtn");
 
+    if (todo.state) {
+      toDoCard.classList.add("toDoCompleted");
+    }
+
     // adding priority
     switch (todo.priority) {
       case "low":
@@ -108,6 +112,7 @@ class DOMrender {
     newToDoForm_modal.classList.remove("visible");
   }
   renderAllTodos() {
+    todoContainer.innerHTML = "";
     for (let i = 0; i < todoManagment.todos.length; i++) {
       this.renderTodo(todoManagment.todos[i]);
     }
@@ -149,10 +154,18 @@ class ToDoManager {
 
   toggleTodoState(e) {
     const targetTodoCard = e.target.closest(".toDoCard");
-    if (targetTodoCard.classList.contains("toDoCompleted")) {
-      targetTodoCard.classList.remove("toDoCompleted");
-    } else {
-      targetTodoCard.classList.add("toDoCompleted");
+    const cardTitle = targetTodoCard.querySelector(".cardtitle").textContent;
+    for (let i = 0, len = todoManagment.todos.length; i < len; i++) {
+      if (todoManagment.todos[i].title === cardTitle) {
+        if (todoManagment.todos[i].state === false) {
+          todoManagment.todos[i].state = true;
+          targetTodoCard.classList.add("toDoCompleted");
+        } else {
+          todoManagment.todos[i].state = false;
+          targetTodoCard.classList.remove("toDoCompleted");
+        }
+        return;
+      }
     }
   }
 }
