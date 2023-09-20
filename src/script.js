@@ -158,8 +158,10 @@ class DOMrender {
   }
   renderAllTodos() {
     todoContainer.innerHTML = "";
-    for (let i = 0; i < todoManager.todos.length; i++) {
-      this.renderTodo(todoManager.todos[i]);
+    if (todoManager.todos && todoManager.todos.length > 0) {
+      for (let i = 0; i < todoManager.todos.length; i++) {
+        this.renderTodo(todoManager.todos[i]);
+      }
     }
   }
 
@@ -180,28 +182,48 @@ class DOMrender {
     const uList = document.createElement("ul");
     mainWindow_ProjectsContainer.appendChild(uList);
 
-    for (let i = 0, len = projectManager.projects.length; i < len; i++) {
-      const newListItem = document.createElement("li");
+    if (projectManager.projects && projectManager.projects.length > 0) {
+      for (let i = 0, len = projectManager.projects.length; i < len; i++) {
+        const newListItem = document.createElement("li");
 
-      newListItem.innerText = projectManager.projects[i];
-      newListItem.classList.add("filter");
+        newListItem.innerText = projectManager.projects[i];
+        newListItem.classList.add("project");
 
-      uList.appendChild(newListItem);
+        uList.appendChild(newListItem);
+      }
     }
+  }
+
+  activateProject_newTodoWindow(e) {
+    const list = e.target.closest("ul");
+
+    // Remove "activeProject" class from all <li> elements within the <ul>
+    list.querySelectorAll("li").forEach((li) => {
+      li.classList.remove("activeProject");
+    });
+
+    // Add "activeProject" class to the clicked element (e.target)
+    e.target.classList.add("activeProject");
   }
 
   renderProjects_newTodoWindow() {
     newTodoWindow_projectsContainer.innerHTML = "";
     const ulList = document.createElement("ul");
     newTodoWindow_projectsContainer.appendChild(ulList);
+    if (projectManager.projects && projectManager.projects.length > 0) {
+      for (let i = 0, len = projectManager.projects.length; i < len; i++) {
+        const newListItem = document.createElement("li");
 
-    for (let i = 0, len = projectManager.projects.length; i < len; i++) {
-      const newListItem = document.createElement("li");
+        newListItem.innerText = projectManager.projects[i];
+        newListItem.classList.add("project");
 
-      newListItem.innerText = projectManager.projects[i];
-      newListItem.classList.add("filter");
+        ulList.appendChild(newListItem);
 
-      ulList.appendChild(newListItem);
+        // add active state for clicked element
+        newListItem.addEventListener("click", (e) => {
+          this.activateProject_newTodoWindow(e);
+        });
+      }
     }
   }
 }
@@ -213,13 +235,15 @@ const DOMrenderer = new DOMrender();
 
 class ToDoManagment {
   constructor() {
-    this.todos = []; // Store To-Do items in memory
     this.todos = memoryManager.getTodoList();
   }
   todos = memoryManager.getTodoList();
 
   addToDo(todo) {
-    this.todos.push(todo); // pushes new todo to todo array
+    if (this.todos === null || this.todos === undefined) {
+      this.todos = []; // Initialize todos if it's null or undefined
+    }
+    this.todos.push(todo); // Push the new todo
     memoryManager.saveTodoList();
   }
 
@@ -234,6 +258,16 @@ class ToDoManagment {
     }
   }
 
+  checkForActiveProject() {
+    let activeProject = null; // Initialize a variable to store the active project
+    newTodoWindow_projectsContainer.querySelectorAll("li").forEach((li) => {
+      if (li.classList.contains("activeProject")) {
+        activeProject = li.innerText; // Set the active project
+      }
+    });
+    return activeProject; // Return the active project after the loop
+  }
+
   // creates Todo from new todo form window
   createTodo() {
     let title = form_toDo_title.value;
@@ -241,9 +275,9 @@ class ToDoManagment {
     let date = form_toDo_date.value;
     let priority = this.checkForActivePriority();
     let state = false;
-    let filter;
+    let project = this.checkForActiveProject();
 
-    return { title, details, date, priority, state, filter };
+    return { title, details, date, priority, state, project };
   }
 
   findTodoIndex(e) {
@@ -267,6 +301,7 @@ class ToDoManagment {
       todoElement.state = false;
     }
 
+    memoryManager.saveTodoList();
     DOMrenderer.renderAllTodos();
     return;
   }
@@ -288,11 +323,14 @@ const todoManager = new ToDoManagment();
 // projectmanagment to include all project manipulation
 class ProjectManagment {
   constructor() {
-    this.projects = [];
     this.projects = memoryManager.getProjectsList();
   }
 
   createNewProject(newProject) {
+    if (this.projects === null || this.todos === undefined) {
+      this.projects = [];
+    }
+
     this.projects.push(newProject);
     memoryManager.saveProjectsList();
     DOMrenderer.renderProjects_mainPageContainer();
@@ -332,6 +370,8 @@ function submitTodoformFunction() {
   DOMrenderer.renderAllTodos();
 
   DOMrenderer.closeAddToDoForm();
+
+  console.log(todoManager.todos);
 }
 
 //
@@ -369,3 +409,7 @@ CreateNewProjectTextField.addEventListener("keypress", function (e) {
 // start the page with the pages loaded
 DOMrenderer.renderAllTodos();
 DOMrenderer.renderProjects_mainPageContainer();
+
+//  PLANS  //
+
+// - make it so you can choose the project for the created todo in the newtodo window by clicking the specific project
