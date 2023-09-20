@@ -158,10 +158,9 @@ class DOMrender {
   }
   renderAllTodos() {
     todoContainer.innerHTML = "";
-    if (todoManager.todos && todoManager.todos.length > 0) {
-      for (let i = 0; i < todoManager.todos.length; i++) {
-        this.renderTodo(todoManager.todos[i]);
-      }
+
+    for (let i = 0; i < todoManager.todos.length; i++) {
+      this.renderTodo(todoManager.todos[i]);
     }
   }
 
@@ -182,15 +181,21 @@ class DOMrender {
     const uList = document.createElement("ul");
     mainWindow_ProjectsContainer.appendChild(uList);
 
-    if (projectManager.projects && projectManager.projects.length > 0) {
-      for (let i = 0, len = projectManager.projects.length; i < len; i++) {
-        const newListItem = document.createElement("li");
+    for (let i = 0, len = projectManager.projects.length; i < len; i++) {
+      const newListItem = document.createElement("li");
 
-        newListItem.innerText = projectManager.projects[i];
-        newListItem.classList.add("project");
+      newListItem.innerText = projectManager.projects[i];
+      newListItem.classList.add("project");
 
-        uList.appendChild(newListItem);
-      }
+      uList.appendChild(newListItem);
+
+      const deleteProjectBtn = document.createElement("button");
+      deleteProjectBtn.classList.add("deleteProjectBtn");
+      newListItem.appendChild(deleteProjectBtn);
+
+      deleteProjectBtn.addEventListener("click", function () {
+        projectManager.deleteProject(i);
+      });
     }
   }
 
@@ -220,7 +225,7 @@ class DOMrender {
         ulList.appendChild(newListItem);
 
         // add active state for clicked element
-        newListItem.addEventListener("click", (e) => {
+        newListItem.addEventListener("click", function (e) {
           this.activateProject_newTodoWindow(e);
         });
       }
@@ -327,13 +332,29 @@ class ProjectManagment {
   }
 
   createNewProject(newProject) {
-    if (this.projects === null || this.todos === undefined) {
+    if (this.projects === null || this.projects === undefined) {
       this.projects = [];
     }
 
     this.projects.push(newProject);
     memoryManager.saveProjectsList();
     DOMrenderer.renderProjects_mainPageContainer();
+  }
+
+  // findProjectIndex(e) {
+  //   const targetProject = e.target.closest(".project");
+  //   const project = targetProject.innerText;
+  //   for (let i = 0, len = projectManager.projects.length; i < len; i++) {
+  //     if (projectManager.projects[i] === project) {
+  //       return i;
+  //     }
+  //   }
+  // }
+
+  deleteProject(index) {
+    this.projects.splice(index, 1);
+    DOMrenderer.renderProjects_mainPageContainer();
+    memoryManager.saveProjectsList();
   }
 }
 const projectManager = new ProjectManagment();
@@ -368,10 +389,7 @@ function submitTodoformFunction() {
   let newTodo = todoManager.createTodo();
   todoManager.addToDo(newTodo);
   DOMrenderer.renderAllTodos();
-
   DOMrenderer.closeAddToDoForm();
-
-  console.log(todoManager.todos);
 }
 
 //

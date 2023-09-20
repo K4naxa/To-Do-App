@@ -57,14 +57,40 @@ body {
       & ul {
         list-style-type: none;
         margin: 0;
-        margin-right: 2em;
+
         padding: 0;
 
         & li {
           cursor: pointer;
           margin-bottom: 0.3rem;
 
-          &.activeFilter {
+          display: flex;
+          width: 80%;
+          justify-content: space-between;
+          align-items: center;
+
+          &:hover {
+            .deleteProjectBtn {
+              visibility: visible;
+            }
+          }
+
+          & .deleteProjectBtn {
+            visibility: hidden;
+            background-image: url(/src/images/icons/trash-2.svg);
+            height: 1rem;
+            background-position: center;
+            background-size: 1rem;
+            opacity: 30%;
+            border: 0;
+            margin: 0;
+
+            &:hover {
+              cursor: pointer;
+            }
+          }
+
+          &.activeProject {
             list-style: "// ";
             color: #62bec1;
           }
@@ -85,13 +111,12 @@ body {
         height: 1.3rem;
         background-size: 1rem;
         border-radius: 6px;
-        box-shadow: 0px 2px 3px black;
-        opacity: 50%;
-        margin-left: -2em;
+        opacity: 40%;
+        border-color: #62bec1;
 
         &:hover {
           cursor: pointer;
-          opacity: 70%;
+          opacity: 90%;
         }
 
         &.visible {
@@ -319,13 +344,15 @@ body {
       & li {
         cursor: pointer;
 
-        &.activeFilter {
+        &.activeProject {
           list-style: "// ";
+          color: #62bec1;
         }
       }
 
       & :hover {
         list-style: "// ";
+        color: #62bec1;
       }
     }
   }
