@@ -199,8 +199,8 @@ class DOMrender {
     }
   }
 
-  activateProject_newTodoWindow(e) {
-    const list = e.target.closest("ul");
+  activateProject_newTodoWindow(event) {
+    const list = event.target.closest("ul");
 
     // Remove "activeProject" class from all <li> elements within the <ul>
     list.querySelectorAll("li").forEach((li) => {
@@ -208,27 +208,26 @@ class DOMrender {
     });
 
     // Add "activeProject" class to the clicked element (e.target)
-    e.target.classList.add("activeProject");
+    event.target.classList.add("activeProject");
   }
 
   renderProjects_newTodoWindow() {
     newTodoWindow_projectsContainer.innerHTML = "";
     const ulList = document.createElement("ul");
     newTodoWindow_projectsContainer.appendChild(ulList);
-    if (projectManager.projects && projectManager.projects.length > 0) {
-      for (let i = 0, len = projectManager.projects.length; i < len; i++) {
-        const newListItem = document.createElement("li");
 
-        newListItem.innerText = projectManager.projects[i];
-        newListItem.classList.add("project");
+    for (let i = 0, len = projectManager.projects.length; i < len; i++) {
+      const newListItem = document.createElement("li");
 
-        ulList.appendChild(newListItem);
+      newListItem.innerText = projectManager.projects[i];
+      newListItem.classList.add("project");
 
-        // add active state for clicked element
-        newListItem.addEventListener("click", function (e) {
-          this.activateProject_newTodoWindow(e);
-        });
-      }
+      ulList.appendChild(newListItem);
+
+      // add active state for clicked element
+      newListItem.addEventListener("click", function (e) {
+        DOMrenderer.activateProject_newTodoWindow(e);
+      });
     }
   }
 }
