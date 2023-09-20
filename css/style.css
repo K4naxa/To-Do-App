@@ -158,12 +158,14 @@ body {
     align-items: center;
     position: relative;
 
+    overflow: scroll;
+
     & .toDoCard {
       background-color: #eeeeee;
       color: #041015;
       font-size: 1.2rem;
       display: flex;
-      width: 95%;
+      width: 93%;
       height: 2rem;
       padding: 8px;
       justify-content: space-between;

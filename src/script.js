@@ -161,7 +161,7 @@ class DOMrender {
     todoContainer.innerHTML = "";
 
     for (let i = 0; i < todoManager.todos.length; i++) {
-      this.renderTodo(todoManager.todos[i]);
+      DOMrenderer.renderTodo(todoManager.todos[i]);
     }
   }
 
@@ -289,6 +289,9 @@ class ToDoManagment {
     return activeProject; // Return the active project after the loop
   }
 
+  formatTodoDate(date) {
+    const parsedDate = dateFns.parse(date, "yyyy-MM-dd", new Date());
+  }
   // creates Todo from new todo form window
   createTodo() {
     let title = form_toDo_title.value;
@@ -380,7 +383,27 @@ class ProjectManagment {
     // Pass the filtered array to renderTodoWithFilter
     DOMrenderer.renderTodoWithFilter(filteredTodos);
   }
+
+  // Function to filter todos based on a specific date
+  filterTodosByDate(date) {
+    const filteredTodos = todoManager.todos.filter((todo) => {
+      const todoDate = new Date(todo.date);
+      return todoDate.toDateString() === date.toDateString();
+    });
+    return filteredTodos;
+  }
+
+  // Call this function to initialize the week filter on page load
+  initializeWeekFilter() {
+    const [startOfWeek, endOfWeek] = getWeekDates();
+    const filteredTodos = todoManager.todos.filter((todo) => {
+      const todoDate = new Date(todo.date);
+      return todoDate >= startOfWeek && todoDate <= endOfWeek;
+    });
+    DOMrenderer.renderTodoWithFilter(filteredTodos);
+  }
 }
+
 const projectManager = new ProjectManagment();
 
 //
@@ -443,10 +466,25 @@ CreateNewProjectTextField.addEventListener("keypress", function (e) {
   }
 });
 
-// renders all todos when "All" is clicked
-todoAllProjectPage.addEventListener("click", function () {
-  DOMrenderer.renderAllTodos();
+// Event listener for the "Day" button
+todoDayProjectPage.addEventListener("click", () => {
+  const currentDate = new Date(); // Get the current date
+  const filteredTodos = projectManager.filterTodosByDate(currentDate);
+  DOMrenderer.renderTodoWithFilter(filteredTodos);
 });
+
+// Event listener for the "Week" button
+todoWeekProjectPage.addEventListener("click", () => {
+  const [startOfWeek, endOfWeek] = getWeekDates(); // Get the start and end of the week
+  const filteredTodos = todoManager.todos.filter((todo) => {
+    const todoDate = new Date(todo.date);
+    return todoDate >= startOfWeek && todoDate <= endOfWeek;
+  });
+  DOMrenderer.renderTodoWithFilter(filteredTodos);
+});
+
+// renders all todos when "All" is clicked
+todoAllProjectPage.onclick = DOMrenderer.renderAllTodos;
 
 // Checks for clicked Priority selection in Todo creation form and activates it
 toDo_lowPriorityBtn.addEventListener("click", (e) => {
@@ -467,4 +505,32 @@ toDo_highPriorityBtn.addEventListener("click", (e) => {
 DOMrenderer.renderAllTodos();
 DOMrenderer.renderProjects_mainPageContainer();
 
-//  PLANS  //
+//TODO - make day / week filters work
+//TODO - Make details button open the details of the todo
+//TODO - make edit button work
+
+const date = new Date();
+console.log(date);
+
+const endDate = new Date();
+endDate.toDateString;
+
+function getWeekDates() {
+  let now = new Date();
+  let dayOfWeek = now.getDay(); //0-6
+  let numDay = now.getDate();
+
+  let start = new Date(now); //copy
+  start.setDate(numDay);
+  start.setHours(0, 0, 0, 0);
+
+  let end = new Date(now); //copy
+  end.setDate(numDay + 7);
+  end.setHours(0, 0, 0, 0);
+
+  return [start, end];
+}
+
+let [start, end] = getWeekDates();
+
+console.log(start.toLocaleString(), end.toLocaleString());
