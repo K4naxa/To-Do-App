@@ -44,6 +44,7 @@ const newtodo_closeWindowBtn = document.getElementById("newtodo_closeWindowBtn")
 //
 //
 
+// memory managment of the projets and todos with local memory
 class MemoryManagment {
   saveTodoList() {
     let todosString = JSON.stringify(todoManager.todos);
@@ -164,6 +165,14 @@ class DOMrender {
     }
   }
 
+  renderTodoWithFilter(filteredTodos) {
+    todoContainer.innerHTML = "";
+
+    for (let i = 0, len = filteredTodos.length; i < len; i++) {
+      this.renderTodo(filteredTodos[i]);
+    }
+  }
+
   ToggleNewProjectTextArea() {
     if (CreateNewProjectBtn.classList.contains("visible")) {
       CreateNewProjectBtn.classList.remove("visible");
@@ -175,6 +184,8 @@ class DOMrender {
       CreateNewProjectTextField.value = "";
     }
   }
+
+  renderActiveProject_MainWindow(projectText) {}
 
   renderProjects_mainPageContainer() {
     mainWindow_ProjectsContainer.innerHTML = "";
@@ -188,6 +199,12 @@ class DOMrender {
       newListItem.classList.add("project");
 
       uList.appendChild(newListItem);
+
+      // Add click event listener to activate the project filter
+      newListItem.addEventListener("click", function (e) {
+        const projectText = e.target.innerText;
+        projectManager.activateProjectFilter(projectText);
+      });
 
       const deleteProjectBtn = document.createElement("button");
       deleteProjectBtn.classList.add("deleteProjectBtn");
@@ -355,6 +372,14 @@ class ProjectManagment {
     DOMrenderer.renderProjects_mainPageContainer();
     memoryManager.saveProjectsList();
   }
+
+  activateProjectFilter(filter) {
+    // Filter the todos array based on the project property
+    const filteredTodos = todoManager.todos.filter((todo) => todo.project === filter);
+
+    // Pass the filtered array to renderTodoWithFilter
+    DOMrenderer.renderTodoWithFilter(filteredTodos);
+  }
 }
 const projectManager = new ProjectManagment();
 
@@ -397,11 +422,31 @@ function submitTodoformFunction() {
 //
 //
 
+// BUTTON LISTENERS //
+
 // Activates todo new Entry window when the + icon is clicked
 addToDo_Btn.onclick = DOMrenderer.renderAddToDoForm;
 
 // closes todo new entry window when x is clicked
 newtodo_closeWindowBtn.onclick = DOMrenderer.closeAddToDoForm;
+
+// creates a new todo from the info of the form and renders it
+submitTodoform.onclick = submitTodoformFunction;
+
+// renders the textarea and focuses on it when newProjectBtn is clicked
+CreateNewProjectBtn.onclick = DOMrenderer.ToggleNewProjectTextArea;
+// when enter is pressed in the newProjectTextarea creates new project of of it rerenders the button back
+CreateNewProjectTextField.addEventListener("keypress", function (e) {
+  if (e.code === "Enter") {
+    projectManager.createNewProject(e.target.value);
+    DOMrenderer.ToggleNewProjectTextArea();
+  }
+});
+
+// renders all todos when "All" is clicked
+todoAllProjectPage.addEventListener("click", function () {
+  DOMrenderer.renderAllTodos();
+});
 
 // Checks for clicked Priority selection in Todo creation form and activates it
 toDo_lowPriorityBtn.addEventListener("click", (e) => {
@@ -414,19 +459,12 @@ toDo_highPriorityBtn.addEventListener("click", (e) => {
   activatePriority(e);
 });
 
-submitTodoform.onclick = submitTodoformFunction;
-CreateNewProjectBtn.onclick = DOMrenderer.ToggleNewProjectTextArea;
-CreateNewProjectTextField.addEventListener("keypress", function (e) {
-  if (e.code === "Enter") {
-    projectManager.createNewProject(e.target.value);
-    DOMrenderer.ToggleNewProjectTextArea();
-  }
-});
+//
+//
+//
 
 // start the page with the pages loaded
 DOMrenderer.renderAllTodos();
 DOMrenderer.renderProjects_mainPageContainer();
 
 //  PLANS  //
-
-// - make it so you can choose the project for the created todo in the newtodo window by clicking the specific project
