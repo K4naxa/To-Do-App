@@ -9,6 +9,7 @@ const todoContainer = document.querySelector(".container");
 
 // main page project container
 const mainWindow_ProjectsContainer = document.querySelector(".mainWindow_ProjectsContainer");
+const mainWindow_MenuSection = document.getElementById("menu");
 
 // button to create new project
 const CreateNewProjectBtn = document.querySelector(".CreateNewProjectBtn");
@@ -76,6 +77,8 @@ class DOMrender {
   renderTodo(todo) {
     // Creating elements for new Todo Card
     const toDoCard = document.createElement("div");
+    const toDoCardFirstRow = document.createElement("div");
+
     const cardContent = document.createElement("div");
     const CheckBtn = document.createElement("button");
     const cardtitle = document.createElement("div");
@@ -88,18 +91,29 @@ class DOMrender {
 
     // giving elements their css classes
     toDoCard.classList.add("toDoCard");
+    toDoCardFirstRow.classList.add("toDoCardFirstRow");
+
     cardContent.classList.add("cardContent");
     CheckBtn.classList.add("CheckBtn");
     cardtitle.classList.add("cardtitle");
 
     cardControls.classList.add("cardControls");
-    detailsBtn.classList.add("detailsBtn");
+
     cardDate.classList.add("cardDate");
     EditBtn.classList.add("EditBtn");
     TrashBtn.classList.add("TrashBtn");
 
+    // Render todo state as completed according to its state
     if (todo.state) {
       toDoCard.classList.add("toDoCompleted");
+    }
+
+    // Create Details button only if todo Details has content
+    if (todo.details !== "") {
+      // create Details Button
+      detailsBtn.classList.add("detailsBtn");
+      detailsBtn.textContent = "Details";
+      cardControls.appendChild(detailsBtn);
     }
 
     // adding priority
@@ -125,16 +139,24 @@ class DOMrender {
     cardDate.textContent = todo.date;
     detailsBtn.textContent = "Details";
 
+    // adding javascript css to the todo card
+    // requestAnimationFrame(() => {
+    //   toDoCard.style.height = `calc(${toDoCardFirstRow.clientHeight}px - 20px)`;
+    //   toDoCard.style.minHeightheight = `calc(${toDoCardFirstRow.clientHeight}px - 20px)`;
+    // });
+
     // appending children for the elements
 
     todoContainer.appendChild(toDoCard);
-    toDoCard.appendChild(cardContent);
-    toDoCard.appendChild(cardControls);
+    toDoCard.appendChild(toDoCardFirstRow);
+
+    toDoCardFirstRow.appendChild(cardContent);
+
+    toDoCardFirstRow.appendChild(cardControls);
 
     cardContent.appendChild(CheckBtn);
     cardContent.appendChild(cardtitle);
 
-    cardControls.appendChild(detailsBtn);
     cardControls.appendChild(cardDate);
     cardControls.appendChild(EditBtn);
     cardControls.appendChild(TrashBtn);
@@ -147,6 +169,33 @@ class DOMrender {
     TrashBtn.addEventListener("click", (e) => {
       todoManager.deleteTodo(e);
     });
+
+    if (todo.details !== "") {
+      // create Details div (hidden by default)
+      const detailsCardRow = document.createElement("div");
+      detailsCardRow.classList.add("detailsCardRow");
+      detailsCardRow.textContent = todo.details;
+      toDoCard.appendChild(detailsCardRow);
+
+      // add event listener to details button (outside of the if statement)
+      detailsBtn.addEventListener("click", (e) => {
+        this.rendeCardDetailsToggle(e);
+      });
+    }
+  }
+
+  rendeCardDetailsToggle(e) {
+    const todoCard = e.target.closest(".toDoCard");
+
+    if (todoCard.classList.contains("detailsVisible")) {
+      todoCard.classList.remove("detailsVisible");
+      e.target.textContent = "Details";
+      e.target.style.cssText = "border: 2px solid #62bec1; background-color: #f7f7f7;";
+    } else {
+      todoCard.classList.add("detailsVisible");
+      e.target.textContent = "Close";
+      e.target.style.cssText = "border-color: orange; background-color: orange;";
+    }
   }
 
   renderAddToDoForm() {
@@ -185,7 +234,17 @@ class DOMrender {
     }
   }
 
-  renderActiveProject_MainWindow(projectText) {}
+  renderActiveProject_MainWindow(event) {
+    const list = event.target.closest(".menu");
+
+    // Remove "activeProject" class from all <li> elements within the <ul>
+    list.querySelectorAll("li").forEach((li) => {
+      li.classList.remove("activeProject");
+    });
+
+    // Add "activeProject" class to the clicked element (e.target)
+    event.target.classList.add("activeProject");
+  }
 
   renderProjects_mainPageContainer() {
     mainWindow_ProjectsContainer.innerHTML = "";
@@ -204,6 +263,7 @@ class DOMrender {
       newListItem.addEventListener("click", function (e) {
         const projectText = e.target.innerText;
         projectManager.activateProjectFilter(projectText);
+        DOMrenderer.activateProject_newTodoWindow(event);
       });
 
       const deleteProjectBtn = document.createElement("button");
@@ -217,7 +277,7 @@ class DOMrender {
   }
 
   activateProject_newTodoWindow(event) {
-    const list = event.target.closest("ul");
+    const list = event.target.closest(".menu");
 
     // Remove "activeProject" class from all <li> elements within the <ul>
     list.querySelectorAll("li").forEach((li) => {
@@ -384,6 +444,21 @@ class ProjectManagment {
     DOMrenderer.renderTodoWithFilter(filteredTodos);
   }
 
+  getWeekDates() {
+    let now = new Date();
+    let dayOfWeek = now.getDay(); //0-6
+    let numDay = now.getDate();
+
+    let start = new Date(now); //copy
+    start.setDate(numDay);
+    start.setHours(0, 0, 0, 0);
+
+    let end = new Date(now); //copy
+    end.setDate(numDay + 7);
+    end.setHours(0, 0, 0, 0);
+
+    return [start, end];
+  }
   // Function to filter todos based on a specific date
   filterTodosByDate(date) {
     const filteredTodos = todoManager.todos.filter((todo) => {
@@ -395,7 +470,7 @@ class ProjectManagment {
 
   // Call this function to initialize the week filter on page load
   initializeWeekFilter() {
-    const [startOfWeek, endOfWeek] = getWeekDates();
+    const [startOfWeek, endOfWeek] = this.getWeekDates();
     const filteredTodos = todoManager.todos.filter((todo) => {
       const todoDate = new Date(todo.date);
       return todoDate >= startOfWeek && todoDate <= endOfWeek;
@@ -467,20 +542,22 @@ CreateNewProjectTextField.addEventListener("keypress", function (e) {
 });
 
 // Event listener for the "Day" button
-todoDayProjectPage.addEventListener("click", () => {
+todoDayProjectPage.addEventListener("click", (e) => {
   const currentDate = new Date(); // Get the current date
   const filteredTodos = projectManager.filterTodosByDate(currentDate);
   DOMrenderer.renderTodoWithFilter(filteredTodos);
+  DOMrenderer.renderActiveProject_MainWindow(e);
 });
 
 // Event listener for the "Week" button
-todoWeekProjectPage.addEventListener("click", () => {
-  const [startOfWeek, endOfWeek] = getWeekDates(); // Get the start and end of the week
+todoWeekProjectPage.addEventListener("click", (e) => {
+  const [startOfWeek, endOfWeek] = projectManager.getWeekDates(); // Get the start and end of the week
   const filteredTodos = todoManager.todos.filter((todo) => {
     const todoDate = new Date(todo.date);
     return todoDate >= startOfWeek && todoDate <= endOfWeek;
   });
   DOMrenderer.renderTodoWithFilter(filteredTodos);
+  DOMrenderer.renderActiveProject_MainWindow(e);
 });
 
 // renders all todos when "All" is clicked
@@ -505,32 +582,5 @@ toDo_highPriorityBtn.addEventListener("click", (e) => {
 DOMrenderer.renderAllTodos();
 DOMrenderer.renderProjects_mainPageContainer();
 
-//TODO - make day / week filters work
 //TODO - Make details button open the details of the todo
 //TODO - make edit button work
-
-const date = new Date();
-console.log(date);
-
-const endDate = new Date();
-endDate.toDateString;
-
-function getWeekDates() {
-  let now = new Date();
-  let dayOfWeek = now.getDay(); //0-6
-  let numDay = now.getDate();
-
-  let start = new Date(now); //copy
-  start.setDate(numDay);
-  start.setHours(0, 0, 0, 0);
-
-  let end = new Date(now); //copy
-  end.setDate(numDay + 7);
-  end.setHours(0, 0, 0, 0);
-
-  return [start, end];
-}
-
-let [start, end] = getWeekDates();
-
-console.log(start.toLocaleString(), end.toLocaleString());

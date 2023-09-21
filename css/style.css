@@ -14,6 +14,7 @@ body {
 #mainContainer {
   width: clamp(800px, 70%, 1400px);
   height: clamp(500px, 70%, 900px);
+  resize: both;
 
   display: grid;
   grid-template-columns: clamp(120px, 220px, 260px) 1fr;
@@ -99,8 +100,7 @@ body {
         }
 
         & :hover {
-          list-style: "// ";
-          color: #62bec1;
+          text-shadow: 0px 1px 2px gray;
         }
       }
 
@@ -154,78 +154,100 @@ body {
     grid-column: 2/2;
     background-color: #f7f7f7;
     display: flex;
+    height: 100%;
     flex-direction: column;
     align-items: center;
     position: relative;
 
-    overflow: scroll;
+    overflow: hidden;
+    overflow-y: scroll;
 
     & .toDoCard {
+      display: flex;
+      flex-direction: column;
+      width: 95%;
       background-color: #eeeeee;
       color: #041015;
       font-size: 1.2rem;
-      display: flex;
-      width: 93%;
-      height: 2rem;
-      padding: 8px;
-      justify-content: space-between;
-      border-radius: 5px;
+      height: 1.6rem;
       margin: 6px;
+      padding: 8px;
+      overflow: hidden;
 
-      & div {
+      &.detailsVisible {
+        transition: max-height 1s ease-in-out;
+        max-height: 600px !important;
+        height: max-content !important;
+        & .detailsCardRow {
+          overflow-y: scroll;
+        }
+      }
+
+      & .toDoCardFirstRow {
         display: flex;
-        gap: 20px;
-        align-items: center;
+        width: 100%;
+        height: fit-content;
+        padding-bottom: 1rem;
+        justify-content: space-between;
+        padding-bottom: 1rem;
+
+        & div {
+          display: flex;
+          gap: 20px;
+          align-items: center;
+        }
+
+        & button {
+          height: 1.5rem;
+          min-width: 1.5rem;
+          width: 1.5rem;
+          cursor: pointer;
+          border: 0;
+
+          &.detailsBtn {
+            min-width: fit-content;
+            width: fit-content;
+            border-radius: 3px;
+            border: 2px solid #62bec1;
+            background-color: #f7f7f7;
+            margin: 0;
+            font-size: 0.9em;
+            height: 1.5em;
+
+            &:hover {
+              background-color: #62bec1;
+              color: white;
+              cursor: pointer;
+            }
+          }
+
+          &.CheckBtn {
+            border: 2px solid #62bec1;
+            border-radius: 3px;
+            &:hover {
+              background-image: url(/src/images/icons/check.svg);
+              background-size: 1.5em;
+            }
+            &:active {
+              transform: scale(1.1);
+            }
+          }
+
+          &.TrashBtn {
+            background-image: url(/src/images/icons/trash-2.svg);
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+
+          &.EditBtn {
+            background-image: url(/src/images/icons/edit.svg);
+            &:hover {
+              transform: scale(1.05);
+            }
+          }
+        }
       }
-
-      & button {
-        height: 1.5rem;
-        width: 1.5rem;
-        cursor: pointer;
-        border: 0;
-
-        &.detailsBtn {
-          width: fit-content;
-          border-radius: 3px;
-          border: 2px solid #62bec1;
-          margin: 0;
-          font-size: 0.9em;
-          height: 1.5em;
-
-          &:hover {
-            background-color: #62bec1;
-            color: white;
-            cursor: pointer;
-          }
-        }
-
-        &.CheckBtn {
-          border: 2px solid #62bec1;
-          border-radius: 3px;
-          &:hover {
-            background-image: url(/src/images/icons/check.svg);
-            background-size: 1.5em;
-          }
-          &:active {
-            transform: scale(1.1);
-          }
-        }
-
-        &.TrashBtn {
-          background-image: url(/src/images/icons/trash-2.svg);
-          &:hover {
-            transform: scale(1.05);
-          }
-        }
-
-        &.EditBtn {
-          background-image: url(/src/images/icons/edit.svg);
-          &:hover {
-            transform: scale(1.05);
-          }
-        }
-      }
-
       &.priorityMedium {
         border-left: 3px solid orange;
       }
@@ -253,7 +275,6 @@ body {
           transition: all 0.2s ease-out;
         }
       }
-
       &:hover {
         transform: scale(1.003);
         box-shadow: 3px 3px 5px 2px rgba(0, 0, 0, 0.2);
