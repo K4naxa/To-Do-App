@@ -166,24 +166,37 @@ class DOMrender {
     TrashBtn.addEventListener("click", (e) => {
       todoManager.deleteTodo(e);
     });
+
+    EditBtn.addEventListener("click", (e) => {
+      this.renderEditTodo(e);
+    });
   }
 
   rendeCardDetailsToggle(e) {
     const todoCard = e.target.closest(".toDoCard");
+    const detailsBtn = todoCard.querySelector(".detailsBtn");
+
+    // Check if the card already has the "Edit" class
+    if (todoCard.classList.contains("Edit")) {
+      return;
+    }
     const index = todoManager.findTodoIndex(e);
 
-    if (e.target.textContent === "Close") {
-      e.target.textContent = "Details";
-      e.target.style.cssText = "border: 2px solid #62bec1; background-color: #f7f7f7;";
+    if (todoCard.classList.contains("Details")) {
+      detailsBtn.textContent = "Details";
+      detailsBtn.style.cssText = "border: 2px solid #62bec1; background-color: #f7f7f7;";
 
       // Find the detailsCardRow and remove it
       const detailsCardRow = todoCard.querySelector(".detailsCardRow");
       if (detailsCardRow) {
         todoCard.removeChild(detailsCardRow);
       }
+      todoCard.classList.remove("Details");
     } else {
-      e.target.textContent = "Close";
-      e.target.style.cssText = "border-color: orange; background-color: orange;";
+      detailsBtn.textContent = "Close";
+      detailsBtn.style.cssText = "border-color: orange; background-color: orange;";
+
+      todoCard.classList.add("Details");
 
       // Create Details div (hidden by default)
       const detailsCardRow = document.createElement("div");
@@ -193,14 +206,10 @@ class DOMrender {
     }
   }
 
-  renderAddToDoForm() {
-    document.getElementById("createTodoForm").reset(); // resets the form
-    DOMrenderer.renderProjects_newTodoWindow(); // Renders interactable project list to Addtodo form window
-    newToDoForm_modal.classList.add("visible"); // makes the window visible
-  }
   closeAddToDoForm() {
     newToDoForm_modal.classList.remove("visible");
   }
+
   renderAllTodos() {
     todoContainer.innerHTML = "";
 
@@ -283,6 +292,12 @@ class DOMrender {
     event.target.classList.add("activeProject");
   }
 
+  renderAddToDoForm() {
+    document.getElementById("createTodoForm").reset(); // resets the form
+    DOMrenderer.renderProjects_newTodoWindow(); // Renders interactable project list to Addtodo form window
+    newToDoForm_modal.classList.add("visible"); // makes the window visible
+  }
+
   renderProjects_newTodoWindow() {
     newTodoWindow_projectsContainer.innerHTML = "";
     const ulList = document.createElement("ul");
@@ -301,6 +316,46 @@ class DOMrender {
         DOMrenderer.activateProject_newTodoWindow(e);
       });
     }
+  }
+
+  renderEditTodo(e) {
+    const todoCard = e.target.closest(".toDoCard");
+
+    // Check if the card already has the "Edit" class
+    if (todoCard.classList.contains("Edit")) {
+      return;
+    }
+
+    if (todoCard.classList.contains("Details")) {
+      this.rendeCardDetailsToggle(e);
+    }
+
+    // Add the "Edit" class to the card
+    todoCard.classList.add("Edit");
+    const index = todoManager.findTodoIndex(e);
+
+    // Render title into text area
+    const titleTextarea = document.createElement("textarea");
+    titleTextarea.innerText = todoManager.todos[index].title;
+    todoCard.querySelector(".cardtitle").replaceWith(titleTextarea);
+
+    titleTextarea.classList.add("textarea");
+
+    // Render Details into textarea
+    const detailsCardRow = document.createElement("textarea");
+    detailsCardRow.classList.add("detailsCardRow");
+    detailsCardRow.textContent = todoManager.todos[index].details;
+    todoCard.appendChild(detailsCardRow);
+
+    const cancelBtn = document.createElement("button");
+    const saveBtn = document.createElement("button");
+    cancelBtn.innerText = "Cancel";
+    saveBtn.innerText = "Save";
+
+    detailsCardRow.appendChild(saveBtn);
+    detailsCardRow.appendChild(cancelBtn);
+
+    saveBtn.addEventListener("click", function () {});
   }
 }
 const DOMrenderer = new DOMrender();
