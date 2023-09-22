@@ -167,29 +167,22 @@ body {
       flex-direction: column;
       width: 95%;
       background-color: #eeeeee;
+      min-height: fit-content;
       color: #041015;
       font-size: 1.2rem;
-      height: 1.6rem;
       margin: 6px;
       padding: 8px;
-      overflow: hidden;
+      height: fit-content;
 
-      &.detailsVisible {
-        transition: max-height 1s ease-in-out;
-        max-height: 600px !important;
-        height: max-content !important;
-        & .detailsCardRow {
-          overflow-y: scroll;
-        }
+      & .detailsCardRow {
+        padding-top: 1rem;
       }
 
       & .toDoCardFirstRow {
         display: flex;
         width: 100%;
         height: fit-content;
-        padding-bottom: 1rem;
         justify-content: space-between;
-        padding-bottom: 1rem;
 
         & div {
           display: flex;

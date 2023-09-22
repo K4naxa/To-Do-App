@@ -114,6 +114,10 @@ class DOMrender {
       detailsBtn.classList.add("detailsBtn");
       detailsBtn.textContent = "Details";
       cardControls.appendChild(detailsBtn);
+      detailsBtn.textContent = "Details";
+      detailsBtn.addEventListener("click", (e) => {
+        this.rendeCardDetailsToggle(e);
+      });
     }
 
     // adding priority
@@ -137,13 +141,6 @@ class DOMrender {
     // adding text content for elements
     cardtitle.textContent = todo.title;
     cardDate.textContent = todo.date;
-    detailsBtn.textContent = "Details";
-
-    // adding javascript css to the todo card
-    // requestAnimationFrame(() => {
-    //   toDoCard.style.height = `calc(${toDoCardFirstRow.clientHeight}px - 20px)`;
-    //   toDoCard.style.minHeightheight = `calc(${toDoCardFirstRow.clientHeight}px - 20px)`;
-    // });
 
     // appending children for the elements
 
@@ -169,32 +166,30 @@ class DOMrender {
     TrashBtn.addEventListener("click", (e) => {
       todoManager.deleteTodo(e);
     });
-
-    if (todo.details !== "") {
-      // create Details div (hidden by default)
-      const detailsCardRow = document.createElement("div");
-      detailsCardRow.classList.add("detailsCardRow");
-      detailsCardRow.textContent = todo.details;
-      toDoCard.appendChild(detailsCardRow);
-
-      // add event listener to details button (outside of the if statement)
-      detailsBtn.addEventListener("click", (e) => {
-        this.rendeCardDetailsToggle(e);
-      });
-    }
   }
 
   rendeCardDetailsToggle(e) {
     const todoCard = e.target.closest(".toDoCard");
+    const index = todoManager.findTodoIndex(e);
 
-    if (todoCard.classList.contains("detailsVisible")) {
-      todoCard.classList.remove("detailsVisible");
+    if (e.target.textContent === "Close") {
       e.target.textContent = "Details";
       e.target.style.cssText = "border: 2px solid #62bec1; background-color: #f7f7f7;";
+
+      // Find the detailsCardRow and remove it
+      const detailsCardRow = todoCard.querySelector(".detailsCardRow");
+      if (detailsCardRow) {
+        todoCard.removeChild(detailsCardRow);
+      }
     } else {
-      todoCard.classList.add("detailsVisible");
       e.target.textContent = "Close";
       e.target.style.cssText = "border-color: orange; background-color: orange;";
+
+      // Create Details div (hidden by default)
+      const detailsCardRow = document.createElement("div");
+      detailsCardRow.classList.add("detailsCardRow");
+      detailsCardRow.textContent = todoManager.todos[index].details;
+      todoCard.appendChild(detailsCardRow);
     }
   }
 
