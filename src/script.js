@@ -647,7 +647,10 @@ todoWeekProjectPage.addEventListener("click", (e) => {
 });
 
 // renders all todos when "All" is clicked
-todoAllProjectPage.onclick = DOMrenderer.renderAllTodos;
+todoAllProjectPage.addEventListener("click", (e) => {
+  DOMrenderer.renderAllTodos();
+  DOMrenderer.renderActiveProject_MainWindow(e);
+});
 
 // Checks for clicked Priority selection in Todo creation form and activates it
 toDo_lowPriorityBtn.addEventListener("click", (e) => {
@@ -667,5 +670,3 @@ toDo_highPriorityBtn.addEventListener("click", (e) => {
 // start the page with the pages loaded
 DOMrenderer.renderAllTodos();
 DOMrenderer.renderProjects_mainPageContainer();
-
-//TODO - make edit button work
