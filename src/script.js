@@ -331,19 +331,21 @@ class DOMrender {
     }
 
     // Add the "Edit" class to the card
-    todoCard.classList.add("Edit");
+
     const index = todoManager.findTodoIndex(e);
+    const todo = todoManager.todos[index];
+    todoCard.classList.add("Edit");
 
     // Render title into text area
     const titleTextarea = document.createElement("textarea");
-    titleTextarea.value = todoManager.todos[index].title;
+    titleTextarea.value = todo.title;
     todoCard.querySelector(".cardtitle").replaceWith(titleTextarea);
     titleTextarea.classList.add("textarea");
 
     // Render date into editable area
     const todoDateInput = document.createElement("input");
     todoDateInput.type = "date";
-    todoDateInput.value = todoManager.todos[index].date;
+    todoDateInput.value = todo.date;
     todoDateInput.classList.add("todoDateInput");
     todoCard.querySelector(".cardDate").replaceWith(todoDateInput);
 
@@ -355,7 +357,7 @@ class DOMrender {
     // Render Details into textarea
     const todoDetailsTextarea = document.createElement("textarea");
     todoDetailsTextarea.classList.add("todoDetailsTextarea");
-    todoDetailsTextarea.value = todoManager.todos[index].details;
+    todoDetailsTextarea.value = todo.details;
     detailsCardRow.appendChild(todoDetailsTextarea);
 
     // Create container for Cancel and Save button
@@ -376,12 +378,14 @@ class DOMrender {
     editButtonContainer.appendChild(saveBtn);
 
     saveBtn.addEventListener("click", function () {
-      const todo = todoManager.todos[index];
-
       todo.title = titleTextarea.value;
       todo.details = todoDetailsTextarea.value;
       todo.date = todoDateInput.value;
       memoryManager.saveTodoList();
+      DOMrenderer.renderAllTodos();
+    });
+
+    cancelBtn.addEventListener("click", function () {
       DOMrenderer.renderAllTodos();
     });
   }
@@ -444,7 +448,12 @@ class ToDoManagment {
 
   findTodoIndex(e) {
     const targetTodoCard = e.target.closest(".toDoCard"); // scope the todocard to look for its title
-    const cardTitle = targetTodoCard.querySelector(".cardtitle").textContent; // get the title from the card
+    let cardTitle;
+    if (targetTodoCard.classList.contains("Edit")) {
+      cardTitle = targetTodoCard.querySelector(".textarea").value;
+    } else {
+      cardTitle = targetTodoCard.querySelector(".cardtitle").textContent; // get the title from the card
+    }
     for (let i = 0, len = todoManager.todos.length; i < len; i++) {
       // loop through todos to find the index for the specific todo
       if (todoManager.todos[i].title === cardTitle) {
