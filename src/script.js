@@ -340,6 +340,13 @@ class DOMrender {
     todoCard.querySelector(".cardtitle").replaceWith(titleTextarea);
     titleTextarea.classList.add("textarea");
 
+    // Render date into editable area
+    const todoDateInput = document.createElement("input");
+    todoDateInput.type = "date";
+    todoDateInput.value = todoManager.todos[index].date;
+    todoDateInput.classList.add("todoDateInput");
+    todoCard.querySelector(".cardDate").replaceWith(todoDateInput);
+
     // Create container for todo Details
     const detailsCardRow = document.createElement("div");
     detailsCardRow.classList.add("detailsCardRow");
@@ -369,7 +376,13 @@ class DOMrender {
     editButtonContainer.appendChild(saveBtn);
 
     saveBtn.addEventListener("click", function () {
-      // Add code here to handle saving the edited todo
+      const todo = todoManager.todos[index];
+
+      todo.title = titleTextarea.value;
+      todo.details = todoDetailsTextarea.value;
+      todo.date = todoDateInput.value;
+      memoryManager.saveTodoList();
+      DOMrenderer.renderAllTodos();
     });
   }
 }
@@ -455,9 +468,6 @@ class ToDoManagment {
     DOMrenderer.renderAllTodos();
     return;
   }
-
-  saveTodo(index) {}
-
   deleteTodo(e) {
     const index = this.findTodoIndex(e);
     todoManager.todos.splice(index, 1);
