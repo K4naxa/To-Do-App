@@ -336,26 +336,41 @@ class DOMrender {
 
     // Render title into text area
     const titleTextarea = document.createElement("textarea");
-    titleTextarea.innerText = todoManager.todos[index].title;
+    titleTextarea.value = todoManager.todos[index].title;
     todoCard.querySelector(".cardtitle").replaceWith(titleTextarea);
-
     titleTextarea.classList.add("textarea");
 
-    // Render Details into textarea
-    const detailsCardRow = document.createElement("textarea");
+    // Create container for todo Details
+    const detailsCardRow = document.createElement("div");
     detailsCardRow.classList.add("detailsCardRow");
-    detailsCardRow.textContent = todoManager.todos[index].details;
     todoCard.appendChild(detailsCardRow);
 
+    // Render Details into textarea
+    const todoDetailsTextarea = document.createElement("textarea");
+    todoDetailsTextarea.classList.add("todoDetailsTextarea");
+    todoDetailsTextarea.value = todoManager.todos[index].details;
+    detailsCardRow.appendChild(todoDetailsTextarea);
+
+    // Create container for Cancel and Save button
+    const editButtonContainer = document.createElement("div");
+    editButtonContainer.classList.add("editButtonContainer");
+    todoCard.appendChild(editButtonContainer);
+
+    // Create and style Cancel button
     const cancelBtn = document.createElement("button");
-    const saveBtn = document.createElement("button");
     cancelBtn.innerText = "Cancel";
+    cancelBtn.classList.add("editCancelBtn");
+    editButtonContainer.appendChild(cancelBtn);
+
+    // Create and style Save button
+    const saveBtn = document.createElement("button");
     saveBtn.innerText = "Save";
+    saveBtn.classList.add("editSaveBtn");
+    editButtonContainer.appendChild(saveBtn);
 
-    detailsCardRow.appendChild(saveBtn);
-    detailsCardRow.appendChild(cancelBtn);
-
-    saveBtn.addEventListener("click", function () {});
+    saveBtn.addEventListener("click", function () {
+      // Add code here to handle saving the edited todo
+    });
   }
 }
 const DOMrenderer = new DOMrender();
@@ -425,6 +440,7 @@ class ToDoManagment {
     }
   }
 
+  // Funtion to control the todo progression state ON / OFF
   toggleTodoState(e) {
     const index = this.findTodoIndex(e);
     const todoElement = todoManager.todos[index];
@@ -439,6 +455,8 @@ class ToDoManagment {
     DOMrenderer.renderAllTodos();
     return;
   }
+
+  saveTodo(index) {}
 
   deleteTodo(e) {
     const index = this.findTodoIndex(e);
@@ -470,15 +488,15 @@ class ProjectManagment {
     DOMrenderer.renderProjects_mainPageContainer();
   }
 
-  // findProjectIndex(e) {
-  //   const targetProject = e.target.closest(".project");
-  //   const project = targetProject.innerText;
-  //   for (let i = 0, len = projectManager.projects.length; i < len; i++) {
-  //     if (projectManager.projects[i] === project) {
-  //       return i;
-  //     }
-  //   }
-  // }
+  findProjectIndex(e) {
+    const targetProject = e.target.closest(".project");
+    const project = targetProject.innerText;
+    for (let i = 0, len = projectManager.projects.length; i < len; i++) {
+      if (projectManager.projects[i] === project) {
+        return i;
+      }
+    }
+  }
 
   deleteProject(index) {
     this.projects.splice(index, 1);
@@ -496,7 +514,6 @@ class ProjectManagment {
 
   getWeekDates() {
     let now = new Date();
-    let dayOfWeek = now.getDay(); //0-6
     let numDay = now.getDate();
 
     let start = new Date(now); //copy
@@ -632,5 +649,4 @@ toDo_highPriorityBtn.addEventListener("click", (e) => {
 DOMrenderer.renderAllTodos();
 DOMrenderer.renderProjects_mainPageContainer();
 
-//TODO - Make details button open the details of the todo
 //TODO - make edit button work
